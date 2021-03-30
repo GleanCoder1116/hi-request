@@ -4,7 +4,7 @@ import type { HiRequestConfig } from './type'
 const callBackInter = new Map()
 
 const _axiosInstance = axios.create({
-  url: ''
+  baseURL: ''
 })
 
 _axiosInstance.interceptors.request.use(
@@ -20,7 +20,7 @@ _axiosInstance.interceptors.request.use(
     }
     // TODO: 为什么不提前，必执行
     callBackInter.has('errorCallback') && callBackInter.get('errorCallback')(error)
-    return error
+    return Promise.reject(error)
   }
 )
 
@@ -36,7 +36,7 @@ _axiosInstance.interceptors.response.use(
       return callBackInter.get('errorResponse')(error)
     }
     callBackInter.has('errorCallback') && callBackInter.get('errorCallback')(error)
-    return error
+    return Promise.reject(error)
   }
 )
 

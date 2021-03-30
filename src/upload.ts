@@ -1,5 +1,5 @@
-import axiosInstance from "./axios";
-import { HiRequestOptions } from "./type"
+import axiosInstance from './axios'
+import { HiRequestOptions } from './type'
 
 const upload = (options: HiRequestOptions) => {
   const { headers: headersOption, data: dataOption, ...restOptions } = options
@@ -9,13 +9,13 @@ const upload = (options: HiRequestOptions) => {
 
   return axiosInstance({
     ...restOptions,
-    method: "post",
+    method: 'post',
     data,
-    headers,
+    headers
   })
 }
 
-function getFormFile (options: HiRequestOptions) {
+function getFormFile(options: HiRequestOptions) {
   const { file, name = 'file', params = {} } = options
   const formFile = new window.FormData()
 

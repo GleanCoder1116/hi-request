@@ -1,4 +1,4 @@
-import { HiRequestOptions } from "./type"
+import { HiRequestOptions } from './type'
 
 const defaultJsonpOptions = {
   timeout: 5000,
@@ -17,7 +17,6 @@ const clearFunction = (functionName: string) => {
   }
 }
 
-
 const insertScript = (script: HTMLScriptElement) => {
   document.getElementsByTagName('head')[0].appendChild(script)
 }
@@ -35,8 +34,9 @@ const jsonp = (options: HiRequestOptions = defaultJsonpOptions) => {
   let timeoutId: number
 
   return new Promise((resolve, reject) => {
-    const url = urlOption + (urlOption.indexOf('?') === -1 ? '?' : '&')
+    const url = urlOption + (urlOption?.indexOf('?') === -1 ? '?' : '&') ?? ''
     const callbackFunction = jsonpCallbackFunction || generateCallbackFunction()
+    const scriptId = `${jsonpCallback}_${callbackFunction}`
 
     // 注册 jsonp callback
     window[callbackFunction] = (response: any) => {
@@ -54,8 +54,9 @@ const jsonp = (options: HiRequestOptions = defaultJsonpOptions) => {
 
     // 创建 jsonp 发送脚本
     const jsonpScript = document.createElement('script')
-    const scriptId = `${jsonpCallback}_${callbackFunction}`
+
     jsonpScript.id = scriptId
+
     jsonpScript.setAttribute('src', `${url}${jsonpCallback}=${callbackFunction}`)
     if (charset) {
       jsonpScript.setAttribute('charset', charset)
@@ -73,7 +74,6 @@ const jsonp = (options: HiRequestOptions = defaultJsonpOptions) => {
 
       // 超时后响应处理：清理自己
       window[callbackFunction] = () => clearFunction(callbackFunction)
-
     }, timeout)
 
     // Caught if got 404/500
