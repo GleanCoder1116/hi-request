@@ -6,8 +6,8 @@
   "files": [
     "lib"
   ],
-  "types": "lib/types/index.d.ts",
-  "typings": "lib/types/index.d.ts",
+  "types": "lib/index.d.ts",
+  "typings": "lib/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
