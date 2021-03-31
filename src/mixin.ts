@@ -2,6 +2,7 @@ import axiosInstance, { axios } from './axios'
 import jsonp from './jsonp'
 import download from './download'
 import upload from './upload'
+import { isHTTPLink } from './utils';
 import type {
   HiRequestType,
   HiRequestOptions,
@@ -22,7 +23,8 @@ const InternalRequest = (
     baseOptions,
     options
   )
-  const _url = baseURL ? baseURL + urlOption : urlOption
+
+  const _url = isHTTPLink(urlOption) ? urlOption : (baseURL ? baseURL + urlOption : urlOption)
   const _type = type || typeOption
 
   const _options = Object.assign({}, options, { url: _url, responseType })
