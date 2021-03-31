@@ -1,22 +1,33 @@
 import axiosInstance, { axios } from './axios'
-import jsonp, { jsonpType } from './jsonp'
-import download, { downloadType } from './download'
-import upload, { uploadType } from './upload'
+import jsonp from './jsonp'
+import download from './download'
+import upload from './upload'
 import type {
+  HiRequestType,
   HiRequestOptions,
   HiRequestMethod,
   HiRequestStaticAxios,
-  HiRequestBaseStatic
+  HiRequestStatic
 } from './type'
 
 // Mixed Request
-const InternalRequest = (options: HiRequestOptions, host?: string) => {
-  const { url: urlOption, type = 'basics', responseType = 'json' } = options
-  const url = host ? host + urlOption : urlOption
+const InternalRequest = (
+  type: HiRequestType | null,
+  url: string | HiRequestOptions,
+  options?: HiRequestOptions
+) => {
+  const baseOptions = typeof url === 'string' ? { url } : url
+  const { url: urlOption, type: typeOption, baseURL, responseType = 'json' } = Object.assign(
+    {},
+    baseOptions,
+    options
+  )
+  const _url = baseURL ? baseURL + urlOption : urlOption
+  const _type = type || typeOption
 
-  const _options = Object.assign({}, options, { url, responseType })
+  const _options = Object.assign({}, options, { url: _url, responseType })
 
-  switch (type) {
+  switch (_type) {
     case 'jsonp':
       return jsonp(_options)
     case 'download':
@@ -28,15 +39,9 @@ const InternalRequest = (options: HiRequestOptions, host?: string) => {
   }
 }
 
-export interface HiRequestStatic extends HiRequestBaseStatic {
-  upload?: uploadType
-  download?: downloadType
-  jsonp?: jsonpType
-}
-
 // @ts-ignore
-const HiRequest: HiRequestStatic = (options: HiRequestOptions, host?: string) =>
-  InternalRequest(options, host)
+const HiRequest: HiRequestStatic = (url: string | HiRequestOptions, options?: HiRequestOptions) =>
+  InternalRequest(null, url, options)
 
 // 请求语法糖： HiRequest.get HiRequest.post ……
 const AXIOS_METHODS: HiRequestMethod[] = [
@@ -70,12 +75,15 @@ AXIOS_REST_STATIC.forEach((type) => {
 })
 
 // jsonp
-HiRequest.jsonp = jsonp
+HiRequest.jsonp = (url: string | HiRequestOptions, options?: HiRequestOptions) =>
+  InternalRequest('jsonp', url, options)
 
 // download
-HiRequest.download = download
+HiRequest.download = (url: string | HiRequestOptions, options?: HiRequestOptions) =>
+  InternalRequest('download', url, options)
 
 // upload
-HiRequest.upload = upload
+HiRequest.upload = (url: string | HiRequestOptions, options?: HiRequestOptions) =>
+  InternalRequest('upload', url, options)
 
 export default HiRequest

@@ -45,9 +45,13 @@ const download = (options: HiRequestOptions) => {
 // 如果没有自定义文件名，则根据响应头部信息生成
 function getDownloadFilename<T>(response: AxiosResponse<T>) {
   const contentDisposition = response?.headers?.['content-disposition']
-  const serverFilename = decodeURI(contentDisposition?.split(';')[1]?.split('filename=')[1])
-  return serverFilename || '未命名'
+  const serverFilename = decodeURI(
+    contentDisposition?.split(';')[1]?.split('filename=')[1] || '未命名'
+  )
+  return serverFilename
 }
 
 export type downloadType = typeof download
+export type downloadReturnType = ReturnType<downloadType>
+
 export default download

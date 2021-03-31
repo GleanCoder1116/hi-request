@@ -15,11 +15,11 @@ _axiosInstance.interceptors.request.use(
     return config
   },
   (error) => {
+    callBackInter.has('errorCallback') && callBackInter.get('errorCallback')(error)
+
     if (callBackInter.has('errorRequest')) {
       return callBackInter.get('errorRequest')(error)
     }
-    // TODO: 为什么不提前，必执行
-    callBackInter.has('errorCallback') && callBackInter.get('errorCallback')(error)
     return Promise.reject(error)
   }
 )
@@ -32,10 +32,11 @@ _axiosInstance.interceptors.response.use(
     return response
   },
   (error) => {
+    callBackInter.has('errorCallback') && callBackInter.get('errorCallback')(error)
+
     if (callBackInter.has('errorResponse')) {
       return callBackInter.get('errorResponse')(error)
     }
-    callBackInter.has('errorCallback') && callBackInter.get('errorCallback')(error)
     return Promise.reject(error)
   }
 )
@@ -49,7 +50,7 @@ const axiosInstance = (options: HiRequestConfig) => {
   errorRequest && callBackInter.set('errorRequest', errorRequest)
   errorCallback && callBackInter.set('errorCallback', errorCallback)
 
-  return _axiosInstance({ ...options })
+  return _axiosInstance(options)
 }
 
 export { axios }

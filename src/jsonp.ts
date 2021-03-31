@@ -1,6 +1,7 @@
 import { HiRequestOptions } from './type'
 
 const defaultJsonpOptions = {
+  url: '',
   timeout: 5000,
   jsonpCallback: 'callback'
 }
@@ -18,23 +19,23 @@ const clearFunction = (functionName: string) => {
 }
 
 const insertScript = (script: HTMLScriptElement) => {
-  document.getElementsByTagName('head')[0].appendChild(script)
+  document.getElementsByTagName('head')[0]?.appendChild(script)
 }
 
 const removeScript = (scriptId: string) => {
   const script = document.getElementById(scriptId)
 
   if (script) {
-    document.getElementsByTagName('head')[0].removeChild(script)
+    document.getElementsByTagName('head')[0]?.removeChild(script)
   }
 }
 
-const jsonp = (options: HiRequestOptions = defaultJsonpOptions) => {
-  const { url: urlOption, timeout, jsonpCallback, jsonpCallbackFunction, charset } = options
+const jsonp = (options: HiRequestOptions) => {
+  const _options = Object.assign({}, defaultJsonpOptions, options)
+  const { url: urlOption, timeout, jsonpCallback, jsonpCallbackFunction, charset } = _options
   let timeoutId: number
 
   return new Promise((resolve, reject) => {
-    const url = urlOption + (urlOption?.indexOf('?') === -1 ? '?' : '&') ?? ''
     const callbackFunction = jsonpCallbackFunction || generateCallbackFunction()
     const scriptId = `${jsonpCallback}_${callbackFunction}`
 
@@ -46,7 +47,7 @@ const jsonp = (options: HiRequestOptions = defaultJsonpOptions) => {
         json: () => Promise.resolve(response)
       })
 
-      clearTimeout(timeoutId)
+      window.clearTimeout(timeoutId)
 
       clearFunction(callbackFunction)
       removeScript(scriptId)
@@ -57,6 +58,7 @@ const jsonp = (options: HiRequestOptions = defaultJsonpOptions) => {
 
     jsonpScript.id = scriptId
 
+    const url = urlOption + (urlOption.indexOf('?') === -1 ? '?' : '&')
     jsonpScript.setAttribute('src', `${url}${jsonpCallback}=${callbackFunction}`)
     if (charset) {
       jsonpScript.setAttribute('charset', charset)
@@ -66,7 +68,7 @@ const jsonp = (options: HiRequestOptions = defaultJsonpOptions) => {
     insertScript(jsonpScript)
 
     // 超时取消
-    timeoutId = setTimeout(() => {
+    timeoutId = window.setTimeout(() => {
       reject(new Error(`JSONP request to ${urlOption} timed out`))
 
       clearFunction(callbackFunction)
@@ -80,7 +82,7 @@ const jsonp = (options: HiRequestOptions = defaultJsonpOptions) => {
     jsonpScript.onerror = () => {
       reject(new Error(`JSONP request to ${urlOption} failed`))
 
-      clearTimeout(timeoutId)
+      window.clearTimeout(timeoutId)
 
       clearFunction(callbackFunction)
       removeScript(scriptId)
@@ -89,4 +91,6 @@ const jsonp = (options: HiRequestOptions = defaultJsonpOptions) => {
 }
 
 export type jsonpType = typeof jsonp
+export type jsonpReturnType = ReturnType<jsonpType>
+
 export default jsonp

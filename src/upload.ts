@@ -34,4 +34,6 @@ function getFormFile(options: HiRequestOptions) {
 }
 
 export type uploadType = typeof upload
+export type uploadReturnType = ReturnType<uploadType>
+
 export default upload
