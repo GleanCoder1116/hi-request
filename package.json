@@ -1,6 +1,6 @@
 {
   "name": "@hi-ui/hi-request",
-  "version": "1.1.0",
+  "version": "1.1.0-alpha",
   "description": "Promise based HTTP client for the browser",
   "main": "lib/index.js",
   "files": [
