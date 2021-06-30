@@ -2,7 +2,15 @@ const TerserPlugin = require('terser-webpack-plugin')
 
 module.exports = {
   entry: {
-    'hi-request.min': './src/index.ts'
+    'hi-request.min': './src/index.ts',
+    index: './src/index.ts',
+    axios: './src/axios.ts',
+    download: './src/download.ts',
+    jsonp: './src/jsonp.ts',
+    mixin: './src/mixin.ts',
+    type: './src/type.ts',
+    upload: './src/upload.ts',
+    utils: './src/utils.ts'
   },
   output: {
     filename: '[name].js',
