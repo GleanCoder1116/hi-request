@@ -2,7 +2,7 @@ const TerserPlugin = require('terser-webpack-plugin')
 
 module.exports = {
   entry: {
-    'hi-request.min': './src/index.js'
+    'hi-request.min': './src/index.ts'
   },
   output: {
     filename: '[name].js',
@@ -12,6 +12,10 @@ module.exports = {
   },
   module: {
     rules: [{ test: /\.ts$/, exclude: /node_modules/, use: ['ts-loader'] }]
+  },
+  //配置模块化引入文件的缺省类型
+  resolve: {
+    extensions: ['.js', '.ts']
   },
   mode: 'none',
   optimization: {
