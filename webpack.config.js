@@ -10,6 +10,9 @@ module.exports = {
     libraryTarget: 'umd',
     libraryExport: 'default'
   },
+  module: {
+    rules: [{ test: /\.ts$/, exclude: /node_modules/, use: ['ts-loader'] }]
+  },
   mode: 'none',
   optimization: {
     minimize: true,
@@ -17,8 +20,8 @@ module.exports = {
       new TerserPlugin({
         terserOptions: {
           output: {
-            comments: false,
-          },
+            comments: false
+          }
         },
         extractComments: false,
         include: /\.min\.js$/
